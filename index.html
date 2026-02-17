@@ -876,11 +876,19 @@ function iniciarActualizacionCamposInicio() {
   if (inputFecha && !inputFecha.dataset.listenerAdded) {
     inputFecha.addEventListener('change', function() {
       this.dataset.userEdited = 'true';
-      document.getElementById('input-inicio-hora').dataset.userEdited = 'true';
-      setTimeout(() => {
+      const inputH = document.getElementById('input-inicio-hora');
+      if (inputH) inputH.dataset.userEdited = 'true';
+      
+      // Limpiar timeout anterior si existe
+      if (this.dataset.timeoutId) clearTimeout(this.dataset.timeoutId);
+      
+      // Nuevo timeout
+      const timeoutId = setTimeout(() => {
         delete this.dataset.userEdited;
-        delete document.getElementById('input-inicio-hora').dataset.userEdited;
+        if (inputH) delete inputH.dataset.userEdited;
       }, 120000); // 2 minutos
+      
+      this.dataset.timeoutId = timeoutId;
     });
     inputFecha.dataset.listenerAdded = 'true';
   }
@@ -888,11 +896,19 @@ function iniciarActualizacionCamposInicio() {
   if (inputHora && !inputHora.dataset.listenerAdded) {
     inputHora.addEventListener('change', function() {
       this.dataset.userEdited = 'true';
-      document.getElementById('input-inicio-fecha').dataset.userEdited = 'true';
-      setTimeout(() => {
+      const inputF = document.getElementById('input-inicio-fecha');
+      if (inputF) inputF.dataset.userEdited = 'true';
+      
+      // Limpiar timeout anterior si existe
+      if (this.dataset.timeoutId) clearTimeout(this.dataset.timeoutId);
+      
+      // Nuevo timeout
+      const timeoutId = setTimeout(() => {
         delete this.dataset.userEdited;
-        delete document.getElementById('input-inicio-fecha').dataset.userEdited;
+        if (inputF) delete inputF.dataset.userEdited;
       }, 120000); // 2 minutos
+      
+      this.dataset.timeoutId = timeoutId;
     });
     inputHora.dataset.listenerAdded = 'true';
   }
@@ -1100,11 +1116,19 @@ function iniciarActualizacionCamposFin() {
   if (inputFecha && !inputFecha.dataset.listenerAdded) {
     inputFecha.addEventListener('change', function() {
       this.dataset.userEdited = 'true';
-      document.getElementById('input-fin-hora').dataset.userEdited = 'true';
-      setTimeout(() => {
+      const inputH = document.getElementById('input-fin-hora');
+      if (inputH) inputH.dataset.userEdited = 'true';
+      
+      // Limpiar timeout anterior si existe
+      if (this.dataset.timeoutId) clearTimeout(this.dataset.timeoutId);
+      
+      // Nuevo timeout
+      const timeoutId = setTimeout(() => {
         delete this.dataset.userEdited;
-        delete document.getElementById('input-fin-hora').dataset.userEdited;
+        if (inputH) delete inputH.dataset.userEdited;
       }, 120000); // 2 minutos
+      
+      this.dataset.timeoutId = timeoutId;
     });
     inputFecha.dataset.listenerAdded = 'true';
   }
@@ -1112,11 +1136,19 @@ function iniciarActualizacionCamposFin() {
   if (inputHora && !inputHora.dataset.listenerAdded) {
     inputHora.addEventListener('change', function() {
       this.dataset.userEdited = 'true';
-      document.getElementById('input-fin-fecha').dataset.userEdited = 'true';
-      setTimeout(() => {
+      const inputF = document.getElementById('input-fin-fecha');
+      if (inputF) inputF.dataset.userEdited = 'true';
+      
+      // Limpiar timeout anterior si existe
+      if (this.dataset.timeoutId) clearTimeout(this.dataset.timeoutId);
+      
+      // Nuevo timeout
+      const timeoutId = setTimeout(() => {
         delete this.dataset.userEdited;
-        delete document.getElementById('input-fin-fecha').dataset.userEdited;
+        if (inputF) delete inputF.dataset.userEdited;
       }, 120000); // 2 minutos
+      
+      this.dataset.timeoutId = timeoutId;
     });
     inputHora.dataset.listenerAdded = 'true';
   }
@@ -1254,6 +1286,32 @@ async function cargarHistorial() {
       });
       
       if (filtrados.length > 0) {
+        // Ordenar por fecha, más reciente primero
+        filtrados.sort((a, b) => {
+          const fechaA = a.fechaHoraInicio || a.fechaHora || '';
+          const fechaB = b.fechaHoraInicio || b.fechaHora || '';
+          
+          if (!fechaA) return 1;
+          if (!fechaB) return -1;
+          
+          // Parsear fechas
+          let dA, dB;
+          if (fechaA.includes('T')) {
+            dA = new Date(fechaA);
+          } else {
+            dA = new Date(fechaA.replace(' ', 'T'));
+          }
+          
+          if (fechaB.includes('T')) {
+            dB = new Date(fechaB);
+          } else {
+            dB = new Date(fechaB.replace(' ', 'T'));
+          }
+          
+          // Más reciente primero (descendente)
+          return dB - dA;
+        });
+        
         cont.innerHTML = filtrados.slice(0,30).map(r => buildHistorialItem(r)).join('');
       } else {
         cont.innerHTML = '<div class="empty-state"><div class="icon">📋</div><div>No hay registros del mes actual o anterior</div></div>';
