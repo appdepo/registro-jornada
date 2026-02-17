@@ -872,44 +872,34 @@ function iniciarActualizacionCamposInicio() {
   if (inputFecha) delete inputFecha.dataset.userEdited;
   if (inputHora) delete inputHora.dataset.userEdited;
   
+  // Variable compartida para el timeout
+  let sharedTimeoutId = null;
+  
+  const resetUserEdited = () => {
+    sharedTimeoutId = null;
+    if (inputFecha) delete inputFecha.dataset.userEdited;
+    if (inputHora) delete inputHora.dataset.userEdited;
+  };
+  
+  const handleEdit = () => {
+    if (inputFecha) inputFecha.dataset.userEdited = 'true';
+    if (inputHora) inputHora.dataset.userEdited = 'true';
+    
+    // Limpiar timeout anterior si existe
+    if (sharedTimeoutId) clearTimeout(sharedTimeoutId);
+    
+    // Nuevo timeout compartido
+    sharedTimeoutId = setTimeout(resetUserEdited, 120000); // 2 minutos
+  };
+  
   // Agregar listeners para detectar edición manual
   if (inputFecha && !inputFecha.dataset.listenerAdded) {
-    inputFecha.addEventListener('change', function() {
-      this.dataset.userEdited = 'true';
-      const inputH = document.getElementById('input-inicio-hora');
-      if (inputH) inputH.dataset.userEdited = 'true';
-      
-      // Limpiar timeout anterior si existe
-      if (this.dataset.timeoutId) clearTimeout(this.dataset.timeoutId);
-      
-      // Nuevo timeout
-      const timeoutId = setTimeout(() => {
-        delete this.dataset.userEdited;
-        if (inputH) delete inputH.dataset.userEdited;
-      }, 120000); // 2 minutos
-      
-      this.dataset.timeoutId = timeoutId;
-    });
+    inputFecha.addEventListener('change', handleEdit);
     inputFecha.dataset.listenerAdded = 'true';
   }
   
   if (inputHora && !inputHora.dataset.listenerAdded) {
-    inputHora.addEventListener('change', function() {
-      this.dataset.userEdited = 'true';
-      const inputF = document.getElementById('input-inicio-fecha');
-      if (inputF) inputF.dataset.userEdited = 'true';
-      
-      // Limpiar timeout anterior si existe
-      if (this.dataset.timeoutId) clearTimeout(this.dataset.timeoutId);
-      
-      // Nuevo timeout
-      const timeoutId = setTimeout(() => {
-        delete this.dataset.userEdited;
-        if (inputF) delete inputF.dataset.userEdited;
-      }, 120000); // 2 minutos
-      
-      this.dataset.timeoutId = timeoutId;
-    });
+    inputHora.addEventListener('change', handleEdit);
     inputHora.dataset.listenerAdded = 'true';
   }
   
@@ -1121,44 +1111,34 @@ function iniciarActualizacionCamposFin() {
   if (inputFecha) delete inputFecha.dataset.userEdited;
   if (inputHora) delete inputHora.dataset.userEdited;
   
+  // Variable compartida para el timeout
+  let sharedTimeoutId = null;
+  
+  const resetUserEdited = () => {
+    sharedTimeoutId = null;
+    if (inputFecha) delete inputFecha.dataset.userEdited;
+    if (inputHora) delete inputHora.dataset.userEdited;
+  };
+  
+  const handleEdit = () => {
+    if (inputFecha) inputFecha.dataset.userEdited = 'true';
+    if (inputHora) inputHora.dataset.userEdited = 'true';
+    
+    // Limpiar timeout anterior si existe
+    if (sharedTimeoutId) clearTimeout(sharedTimeoutId);
+    
+    // Nuevo timeout compartido
+    sharedTimeoutId = setTimeout(resetUserEdited, 120000); // 2 minutos
+  };
+  
   // Agregar listeners para detectar edición manual
   if (inputFecha && !inputFecha.dataset.listenerAdded) {
-    inputFecha.addEventListener('change', function() {
-      this.dataset.userEdited = 'true';
-      const inputH = document.getElementById('input-fin-hora');
-      if (inputH) inputH.dataset.userEdited = 'true';
-      
-      // Limpiar timeout anterior si existe
-      if (this.dataset.timeoutId) clearTimeout(this.dataset.timeoutId);
-      
-      // Nuevo timeout
-      const timeoutId = setTimeout(() => {
-        delete this.dataset.userEdited;
-        if (inputH) delete inputH.dataset.userEdited;
-      }, 120000); // 2 minutos
-      
-      this.dataset.timeoutId = timeoutId;
-    });
+    inputFecha.addEventListener('change', handleEdit);
     inputFecha.dataset.listenerAdded = 'true';
   }
   
   if (inputHora && !inputHora.dataset.listenerAdded) {
-    inputHora.addEventListener('change', function() {
-      this.dataset.userEdited = 'true';
-      const inputF = document.getElementById('input-fin-fecha');
-      if (inputF) inputF.dataset.userEdited = 'true';
-      
-      // Limpiar timeout anterior si existe
-      if (this.dataset.timeoutId) clearTimeout(this.dataset.timeoutId);
-      
-      // Nuevo timeout
-      const timeoutId = setTimeout(() => {
-        delete this.dataset.userEdited;
-        if (inputF) delete inputF.dataset.userEdited;
-      }, 120000); // 2 minutos
-      
-      this.dataset.timeoutId = timeoutId;
-    });
+    inputHora.addEventListener('change', handleEdit);
     inputHora.dataset.listenerAdded = 'true';
   }
   
