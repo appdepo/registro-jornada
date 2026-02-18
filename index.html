@@ -834,7 +834,6 @@ document.getElementById('btn-guardar-config').addEventListener('click', async ()
 //  RELOJ
 // ═══════════════════════════════════════════
 let updateInicioFieldsInterval = null;
-let inicioSharedTimeoutId = null;
 
 function iniciarReloj() {
   setInterval(() => {
@@ -855,11 +854,16 @@ function actualizarCamposInicioTiempoReal() {
   const inputFecha = document.getElementById('input-inicio-fecha');
   const inputHora = document.getElementById('input-inicio-hora');
   
-  // Solo actualizar si el usuario no está editando (no tienen foco)
-  if (inputFecha && document.activeElement !== inputFecha && !inputFecha.dataset.userEdited) {
+  // Verificar si pasaron 2 minutos desde la última edición
+  const lastEditTime = inputFecha?.dataset.lastEditTime || 0;
+  const timeSinceEdit = Date.now() - parseInt(lastEditTime);
+  const twoMinutes = 120000; // 2 minutos en ms
+  
+  // Solo actualizar si no está en foco Y pasaron 2 minutos desde última edición
+  if (inputFecha && document.activeElement !== inputFecha && timeSinceEdit > twoMinutes) {
     inputFecha.value = fecha;
   }
-  if (inputHora && document.activeElement !== inputHora && !inputHora.dataset.userEdited) {
+  if (inputHora && document.activeElement !== inputHora && timeSinceEdit > twoMinutes) {
     inputHora.value = hora;
   }
 }
@@ -867,27 +871,16 @@ function actualizarCamposInicioTiempoReal() {
 function iniciarActualizacionCamposInicio() {
   if (updateInicioFieldsInterval) clearInterval(updateInicioFieldsInterval);
   
-  // Resetear flags de edición manual
+  // Resetear timestamp
   const inputFecha = document.getElementById('input-inicio-fecha');
   const inputHora = document.getElementById('input-inicio-hora');
-  if (inputFecha) delete inputFecha.dataset.userEdited;
-  if (inputHora) delete inputHora.dataset.userEdited;
-  
-  const resetUserEdited = () => {
-    inicioSharedTimeoutId = null;
-    if (inputFecha) delete inputFecha.dataset.userEdited;
-    if (inputHora) delete inputHora.dataset.userEdited;
-  };
+  if (inputFecha) inputFecha.dataset.lastEditTime = '0';
+  if (inputHora) inputHora.dataset.lastEditTime = '0';
   
   const handleEdit = () => {
-    if (inputFecha) inputFecha.dataset.userEdited = 'true';
-    if (inputHora) inputHora.dataset.userEdited = 'true';
-    
-    // Limpiar timeout anterior si existe
-    if (inicioSharedTimeoutId) clearTimeout(inicioSharedTimeoutId);
-    
-    // Nuevo timeout compartido
-    inicioSharedTimeoutId = setTimeout(resetUserEdited, 120000); // 2 minutos
+    const timestamp = Date.now().toString();
+    if (inputFecha) inputFecha.dataset.lastEditTime = timestamp;
+    if (inputHora) inputHora.dataset.lastEditTime = timestamp;
   };
   
   // Agregar listeners para detectar edición manual
@@ -1082,7 +1075,6 @@ async function iniciarJornada() {
 //  FIN JORNADA
 // ═══════════════════════════════════════════
 let updateFinFieldsInterval = null;
-let finSharedTimeoutId = null;
 
 function actualizarCamposFinTiempoReal() {
   const now = new Date();
@@ -1092,11 +1084,16 @@ function actualizarCamposFinTiempoReal() {
   const inputFecha = document.getElementById('input-fin-fecha');
   const inputHora = document.getElementById('input-fin-hora');
   
-  // Solo actualizar si el usuario no está editando
-  if (inputFecha && document.activeElement !== inputFecha && !inputFecha.dataset.userEdited) {
+  // Verificar si pasaron 2 minutos desde la última edición
+  const lastEditTime = inputFecha?.dataset.lastEditTime || 0;
+  const timeSinceEdit = Date.now() - parseInt(lastEditTime);
+  const twoMinutes = 120000; // 2 minutos en ms
+  
+  // Solo actualizar si no está en foco Y pasaron 2 minutos desde última edición
+  if (inputFecha && document.activeElement !== inputFecha && timeSinceEdit > twoMinutes) {
     inputFecha.value = fecha;
   }
-  if (inputHora && document.activeElement !== inputHora && !inputHora.dataset.userEdited) {
+  if (inputHora && document.activeElement !== inputHora && timeSinceEdit > twoMinutes) {
     inputHora.value = hora;
   }
 }
@@ -1104,27 +1101,16 @@ function actualizarCamposFinTiempoReal() {
 function iniciarActualizacionCamposFin() {
   if (updateFinFieldsInterval) clearInterval(updateFinFieldsInterval);
   
-  // Resetear flags de edición manual
+  // Resetear timestamp
   const inputFecha = document.getElementById('input-fin-fecha');
   const inputHora = document.getElementById('input-fin-hora');
-  if (inputFecha) delete inputFecha.dataset.userEdited;
-  if (inputHora) delete inputHora.dataset.userEdited;
-  
-  const resetUserEdited = () => {
-    finSharedTimeoutId = null;
-    if (inputFecha) delete inputFecha.dataset.userEdited;
-    if (inputHora) delete inputHora.dataset.userEdited;
-  };
+  if (inputFecha) inputFecha.dataset.lastEditTime = '0';
+  if (inputHora) inputHora.dataset.lastEditTime = '0';
   
   const handleEdit = () => {
-    if (inputFecha) inputFecha.dataset.userEdited = 'true';
-    if (inputHora) inputHora.dataset.userEdited = 'true';
-    
-    // Limpiar timeout anterior si existe
-    if (finSharedTimeoutId) clearTimeout(finSharedTimeoutId);
-    
-    // Nuevo timeout compartido
-    finSharedTimeoutId = setTimeout(resetUserEdited, 120000); // 2 minutos
+    const timestamp = Date.now().toString();
+    if (inputFecha) inputFecha.dataset.lastEditTime = timestamp;
+    if (inputHora) inputHora.dataset.lastEditTime = timestamp;
   };
   
   // Agregar listeners para detectar edición manual
