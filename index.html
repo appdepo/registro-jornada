@@ -560,13 +560,9 @@
         <div id="jornada-activa-card" class="card" style="display:none">
           <div class="card-title">Jornada en curso</div>
           <div class="jornada-info">
-            <div class="jornada-field accent">
-              <label>Inicio</label>
-              <span id="jornada-inicio-display">--:--</span>
-            </div>
             <div class="jornada-field accent" style="grid-column: 1 / -1;">
-              <label style="font-size:10px; color:var(--muted);">Fecha</label>
-              <span id="jornada-fecha-display" style="font-size:12px; color:var(--muted);">--</span>
+              <label>Inicio</label>
+              <span id="jornada-inicio-display" style="font-size:13px;">--</span>
             </div>
           </div>
         </div>
@@ -979,28 +975,11 @@ function actualizarUIJornada() {
     cardUltima.style.display = 'none';
 
     const dt = new Date(STATE.jornadaActiva.inicio);
-    const hoy = new Date();
-    const esHoy = dt.getDate() === hoy.getDate() && 
-                  dt.getMonth() === hoy.getMonth() && 
-                  dt.getFullYear() === hoy.getFullYear();
-    
+    const dia = dt.getDate();
+    const mes = dt.toLocaleDateString('es-AR', { month: 'short' });
     const hora = String(dt.getHours()).padStart(2,'0') + ':' + String(dt.getMinutes()).padStart(2,'0');
     
-    if (esHoy) {
-      document.getElementById('jornada-inicio-display').textContent = hora;
-    } else {
-      const fecha = dt.toLocaleDateString('es-AR', { day:'numeric', month:'short' });
-      document.getElementById('jornada-inicio-display').textContent = `${fecha} • ${hora}`;
-    }
-    
-    // Mostrar fecha
-    const fechaStr = dt.toLocaleDateString('es-AR', { 
-      weekday: 'short', 
-      day: 'numeric', 
-      month: 'short', 
-      year: 'numeric' 
-    });
-    document.getElementById('jornada-fecha-display').textContent = fechaStr;
+    document.getElementById('jornada-inicio-display').textContent = `${dia} ${mes} • ${hora}`;
   } else {
     // Detener actualización de campos de fin
     if (updateFinFieldsInterval) {
