@@ -834,6 +834,7 @@ document.getElementById('btn-guardar-config').addEventListener('click', async ()
 //  RELOJ
 // ═══════════════════════════════════════════
 let updateInicioFieldsInterval = null;
+let inicioSharedTimeoutId = null;
 
 function iniciarReloj() {
   setInterval(() => {
@@ -872,11 +873,8 @@ function iniciarActualizacionCamposInicio() {
   if (inputFecha) delete inputFecha.dataset.userEdited;
   if (inputHora) delete inputHora.dataset.userEdited;
   
-  // Variable compartida para el timeout
-  let sharedTimeoutId = null;
-  
   const resetUserEdited = () => {
-    sharedTimeoutId = null;
+    inicioSharedTimeoutId = null;
     if (inputFecha) delete inputFecha.dataset.userEdited;
     if (inputHora) delete inputHora.dataset.userEdited;
   };
@@ -886,10 +884,10 @@ function iniciarActualizacionCamposInicio() {
     if (inputHora) inputHora.dataset.userEdited = 'true';
     
     // Limpiar timeout anterior si existe
-    if (sharedTimeoutId) clearTimeout(sharedTimeoutId);
+    if (inicioSharedTimeoutId) clearTimeout(inicioSharedTimeoutId);
     
     // Nuevo timeout compartido
-    sharedTimeoutId = setTimeout(resetUserEdited, 120000); // 2 minutos
+    inicioSharedTimeoutId = setTimeout(resetUserEdited, 120000); // 2 minutos
   };
   
   // Agregar listeners para detectar edición manual
@@ -1084,6 +1082,7 @@ async function iniciarJornada() {
 //  FIN JORNADA
 // ═══════════════════════════════════════════
 let updateFinFieldsInterval = null;
+let finSharedTimeoutId = null;
 
 function actualizarCamposFinTiempoReal() {
   const now = new Date();
@@ -1111,11 +1110,8 @@ function iniciarActualizacionCamposFin() {
   if (inputFecha) delete inputFecha.dataset.userEdited;
   if (inputHora) delete inputHora.dataset.userEdited;
   
-  // Variable compartida para el timeout
-  let sharedTimeoutId = null;
-  
   const resetUserEdited = () => {
-    sharedTimeoutId = null;
+    finSharedTimeoutId = null;
     if (inputFecha) delete inputFecha.dataset.userEdited;
     if (inputHora) delete inputHora.dataset.userEdited;
   };
@@ -1125,10 +1121,10 @@ function iniciarActualizacionCamposFin() {
     if (inputHora) inputHora.dataset.userEdited = 'true';
     
     // Limpiar timeout anterior si existe
-    if (sharedTimeoutId) clearTimeout(sharedTimeoutId);
+    if (finSharedTimeoutId) clearTimeout(finSharedTimeoutId);
     
     // Nuevo timeout compartido
-    sharedTimeoutId = setTimeout(resetUserEdited, 120000); // 2 minutos
+    finSharedTimeoutId = setTimeout(resetUserEdited, 120000); // 2 minutos
   };
   
   // Agregar listeners para detectar edición manual
