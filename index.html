@@ -1361,30 +1361,61 @@ function buildHistorialItem(r) {
   }
   
   if (esJornada) {
-    // JORNADA: fecha • inicio-fin • duración
+    // JORNADA: mostrar fechas de inicio y fin si son diferentes
     const dInicio = parseFecha(r.fechaHoraInicio);
     if (!dInicio) return ''; // Skip si no se puede parsear
     
-    const fechaStr = dInicio.toLocaleDateString('es-AR', { day:'numeric', month:'short' });
-    const horaInicio = fmtHora(dInicio);
     const dFin = r.fechaHoraFin ? parseFecha(r.fechaHoraFin) : null;
+    const horaInicio = fmtHora(dInicio);
     const horaFin = dFin ? fmtHora(dFin) : '—';
     const dur = dFin ? calcDuracion(dInicio, dFin) : '';
+    
+    let displayText;
+    if (dFin) {
+      // Verificar si inicio y fin son el mismo día
+      const mismoDia = dInicio.getDate() === dFin.getDate() && 
+                       dInicio.getMonth() === dFin.getMonth() && 
+                       dInicio.getFullYear() === dFin.getFullYear();
+      
+      if (mismoDia) {
+        // Mismo día: "09/02 • 09:00 - 22:48"
+        const dia = String(dInicio.getDate()).padStart(2,'0');
+        const mes = String(dInicio.getMonth()+1).padStart(2,'0');
+        displayText = `${dia}/${mes} • ${horaInicio} - ${horaFin}`;
+      } else {
+        // Días diferentes: "09/02 09:00 - 10/02 22:48"
+        const diaIni = String(dInicio.getDate()).padStart(2,'0');
+        const mesIni = String(dInicio.getMonth()+1).padStart(2,'0');
+        const diaFin = String(dFin.getDate()).padStart(2,'0');
+        const mesFin = String(dFin.getMonth()+1).padStart(2,'0');
+        displayText = `${diaIni}/${mesIni} ${horaInicio} - ${diaFin}/${mesFin} ${horaFin}`;
+      }
+    } else {
+      // Sin fin: "09/02 • 09:00 - —"
+      const dia = String(dInicio.getDate()).padStart(2,'0');
+      const mes = String(dInicio.getMonth()+1).padStart(2,'0');
+      displayText = `${dia}/${mes} • ${horaInicio} - ${horaFin}`;
+    }
     
     return `<div class="history-item">
       <div class="history-type ${clase}">${icon}</div>
       <div class="history-body">
         <div class="history-title" style="font-size:13px; line-height:1.4;">
-          ${fechaStr} • ${horaInicio} - ${horaFin}
+          ${displayText}
           ${dur ? `<span class="badge badge-green" style="margin-left:6px;">${dur}</span>` : ''}
         </div>
         ${r.observaciones ? `<div class="history-desc" style="margin-top:4px;">${r.observaciones}</div>` : ''}
       </div>
     </div>`;
   } else {
-    // NOVEDAD: fecha • descripción (usar fechaHoraInicio que siempre está)
+    // NOVEDAD: dd/mm • descripción
     const d = parseFecha(r.fechaHoraInicio);
-    const fechaStr = d ? d.toLocaleDateString('es-AR', { day:'numeric', month:'short' }) : 'Sin fecha';
+    let fechaStr = 'Sin fecha';
+    if (d) {
+      const dia = String(d.getDate()).padStart(2,'0');
+      const mes = String(d.getMonth()+1).padStart(2,'0');
+      fechaStr = `${dia}/${mes}`;
+    }
     
     return `<div class="history-item">
       <div class="history-type ${clase}">${icon}</div>
